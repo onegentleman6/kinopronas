@@ -35,7 +35,7 @@
   .video { position:relative; border-radius:20px; overflow:hidden; background:#000; box-shadow:0 18px 50px rgba(0,0,0,.55), 0 0 0 1px rgba(255,216,107,.18); aspect-ratio:4/5; }
   .video video { width:100%; height:100%; object-fit:cover; display:block; }
   .snd { position:absolute; left:50%; bottom:16px; transform:translateX(-50%); display:flex; align-items:center; gap:8px; border:0; cursor:pointer;
-         background:rgba(20,14,8,.72); color:#fff; font:700 17px Manrope, sans-serif; padding:11px 20px; border-radius:40px; backdrop-filter:blur(6px); box-shadow:0 0 0 1px rgba(255,216,107,.35); }
+         background:rgba(20,14,8,.72); color:#fff; font:700 17px Manrope, sans-serif; padding:11px 20px; border-radius:40px; white-space:nowrap; backdrop-filter:blur(6px); box-shadow:0 0 0 1px rgba(255,216,107,.35); }
   .note { font-size:14px; color:#bfae8f; text-align:center; margin:10px 0 0; }
   .priceRow { display:flex; align-items:baseline; justify-content:center; gap:12px; margin:24px 0 4px; }
   .price { font-size:46px; font-weight:800; color:#fff; letter-spacing:-.5px; }
@@ -104,25 +104,65 @@
   .sticky.show { transform:none; }
   .sticky .pill { max-width:528px; margin:0 auto; padding:16px; font-size:19px; }
   @media (min-width:700px) { h1 { font-size:42px; } }
+
+  /* (12.10 v3) сяйво за відео, «зерно» плівки, блиск кнопки, плавна поява, шторка «фото → герой», значки довіри */
+  .hero { position:relative; overflow:hidden; }
+  .hero::before { content:''; position:absolute; inset:0; pointer-events:none; opacity:.07; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+  .hero .wrap { position:relative; }
+  .glow { position:relative; }
+  .glow::before { content:''; position:absolute; inset:-30px -10px; border-radius:40px; background:radial-gradient(closest-side, rgba(255,200,90,.38), rgba(255,200,90,0)); filter:blur(18px); animation:pulse 5s ease-in-out infinite; }
+  @keyframes pulse { 50% { opacity:.55; transform:scale(.97); } }
+  .pill { position:relative; overflow:hidden; }
+  .pill::after { content:''; position:absolute; top:0; bottom:0; left:-60%; width:40%; background:linear-gradient(100deg, transparent, rgba(255,255,255,.65), transparent); transform:skewX(-20deg); animation:shine 3.6s ease-in-out infinite; }
+  @keyframes shine { 0%, 55% { left:-60%; } 85%, 100% { left:130%; } }
+  .trust { display:flex; flex-wrap:wrap; justify-content:center; gap:8px; margin:16px 0 0; padding:0; list-style:none; }
+  .trust li { font-size:14px; font-weight:700; color:#f3e3c3; background:rgba(255,255,255,.07); border:1px solid rgba(255,216,107,.22); border-radius:30px; padding:7px 12px; }
+  .reveal { opacity:0; transform:translateY(22px); transition:opacity .7s ease, transform .7s ease; }
+  .reveal.in { opacity:1; transform:none; }
+  .ba { position:relative; aspect-ratio:8/9; border-radius:22px; overflow:hidden; user-select:none; touch-action:pan-y; box-shadow:0 14px 40px rgba(80,50,10,.18); background:#ddd; }
+  .ba img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; pointer-events:none; }
+  .ba .top { clip-path:inset(0 calc(100% - var(--x, 50%)) 0 0); }   /* фото — ліворуч від повзунка, герой — праворуч */
+  .ba .bar { position:absolute; top:0; bottom:0; left:var(--x, 50%); width:4px; margin-left:-2px; background:#fff; box-shadow:0 0 12px rgba(0,0,0,.35); }
+  .ba .knob { position:absolute; top:50%; left:var(--x, 50%); width:54px; height:54px; margin:-27px 0 0 -27px; border-radius:50%; background:linear-gradient(180deg, var(--gold), var(--gold2)); display:grid; place-items:center; font-weight:800; color:#2a1a05; font-size:20px; box-shadow:0 6px 18px rgba(0,0,0,.35); }
+  .ba .tag { position:absolute; bottom:12px; font:800 14px Manrope, sans-serif; color:#fff; background:rgba(20,14,8,.7); padding:6px 12px; border-radius:20px; }
+  .ba .tag.l { left:12px; } .ba .tag.r { right:12px; background:linear-gradient(180deg, var(--gold), var(--gold2)); color:#2a1a05; }
+  .baNote { font-size:13px; color:var(--soft); text-align:center; margin:8px 0 0; }
+  .part { display:flex; align-items:center; gap:10px; margin:26px 0 2px; font:800 13px Manrope, sans-serif; letter-spacing:1.2px; text-transform:uppercase; color:var(--goldInk); }
+  .part::after { content:''; flex:1; height:1px; background:var(--line); }
+  .priv { font-size:14px; color:var(--ok); font-weight:700; margin:8px 2px 0; }
+  @media (prefers-reduced-motion: reduce) { .pill::after, .glow::before { animation:none; } .reveal { opacity:1; transform:none; } }
 </style></head><body>
 
 <header class="hero"><div class="wrap">
   <div class="brand"><img src="icon-512.png" alt=""><span>Кіно про нас</span></div>
   <div class="plate"><h1 id="h">Пісня-мультик у подарунок</h1></div>
   <p class="sub">Героїв малюємо <b>з ваших фото</b> — це ваші справжні рідні, а пісню пишемо <b>саме про них</b>, за вашою розповіддю.</p>
-  <div class="video">
+  <div class="glow"><div class="video">
     <video id="v" autoplay muted loop playsinline preload="metadata"></video>
     <button class="snd" id="snd" type="button">🔊 Увімкнути звук</button>
-  </div>
+  </div></div>
   <p class="note">Приклад: герої — вигадана родина студії</p>
   <div class="priceRow"><span class="price">799 <small>грн</small></span></div>
   <p class="per">пісня + мультфільм · готово за добу</p>
   <a class="pill" href="#order" id="cta">Замовити пісню-мультик</a>
   <a class="tgLink tg" href="https://t.me/Kinopronas_bot"><svg viewBox="0 0 24 24" fill="#2aabee"><path d="M12 0a12 12 0 1 0 0 24 12 12 0 0 0 0-24Zm5.6 8.2-1.9 9c-.1.6-.5.8-1 .5l-2.9-2.1-1.4 1.3c-.2.2-.3.3-.6.3l.2-3 5.5-5c.2-.2 0-.3-.4-.1l-6.8 4.3-2.9-.9c-.6-.2-.6-.6.1-.9l11.4-4.4c.5-.2 1 .1.7 1Z"/></svg><u>або замовити в Telegram</u></a>
+  <ul class="trust"><li>⏱ Готово за 24 год</li><li>🔒 Фото бачить лише студія</li><li>💳 Оплата карткою</li></ul>
 </div></header>
 
 <main class="wrap">
-  <section>
+  <section class="reveal">
+    <h2>Ваше фото → герой мультика</h2>
+    <div class="ba" id="ba">
+      <img src="v/hero_hanna.jpg" alt="Героїня мультика">
+      <img class="top" src="v/photo_hanna.jpg" alt="Фото">
+      <div class="bar"></div><div class="knob">⇆</div>
+      <span class="tag l">Фото</span><span class="tag r">Герой мультика</span>
+    </div>
+    <p class="baNote">Потягніть повзунок. Приклад: вигадана героїня студії, фото створено AI.</p>
+  </section>
+
+  <section class="reveal">
     <h2>Як це буде</h2>
     <div class="steps">
       <div class="step"><div class="num">1</div><div><b>Розкажіть про людину</b><span>Кілька речень своїми словами — тут, на цій сторінці.</span></div></div>
@@ -131,7 +171,7 @@
     </div>
   </section>
 
-  <section>
+  <section class="reveal">
     <h2>Приклади</h2>
     <div class="ex" id="ex">
       <button type="button" data-p="bday"><img src="v/bday.jpg" alt="">День народження</button>
@@ -141,10 +181,10 @@
     </div>
   </section>
 
-  <section>
+  <section class="reveal">
     <h2>Гарантії студії</h2>
     <div class="guar">
-      <div><i>✏️</i>Правки безкоштовно — доки результат вас не влаштує</div>
+      <div><i>✍️</i>Пісню пишемо саме про вашу людину — без шаблонів</div>
       <div><i>⏱</i>Не встигли за добу — повертаємо гроші</div>
       <div><i>🔒</i>Ваш мультик бачите лише ви — ми його ніде не публікуємо</div>
     </div>
@@ -156,6 +196,7 @@
         <h2>Анкета замовлення</h2>
         <p class="lead2">2–3 хвилини. Пишіть як зручно, своїми словами.</p>
 
+        <div class="part">1 · Про людину</div>
         <label class="q">З якої нагоди подарунок?</label>
         <div class="chips" id="occ">
           <input type="radio" name="occ" id="o1" value="День народження"><label for="o1">🎂 День народження</label>
@@ -171,10 +212,12 @@
         <textarea id="facts" placeholder="Яка вона, що любить, як ви її ласкаво називаєте, ваш спільний теплий спогад…"></textarea>
         <p class="hint">🎤 Не хочеться писати? Натисніть мікрофон на клавіатурі телефона й скажіть уголос.</p>
 
+        <div class="part">2 · Фото</div>
         <label class="q">Фото <em>(3–8, де добре видно обличчя)</em></label>
         <button type="button" class="photoBtn" id="pick">📷 Додати фото</button>
         <input type="file" id="file" accept="image/*" multiple hidden>
         <div class="thumbs" id="thumbs"></div>
+        <p class="priv">🔒 Фото бачить лише студія — тільки для вашого мультика.</p>
         <p class="hint">Немає фото під рукою? Надішлете потім у Viber.</p>
 
         <label class="q" for="people">Хто є хто на фото? <em>(можна пропустити)</em></label>
@@ -183,6 +226,7 @@
         <label class="q" for="from">Від кого подарунок? <em>(можна пропустити)</em></label>
         <input type="text" id="from" placeholder="від доньки Марії" autocomplete="off">
 
+        <div class="part">3 · Куди надіслати мультик</div>
         <label class="q" for="name">Ваше ім'я</label>
         <input type="text" id="name" autocomplete="given-name">
         <label class="q" for="phone">Ваш телефон (Viber)</label>
@@ -191,7 +235,7 @@
 
         <p class="err" id="err"></p>
         <button class="pill" type="submit" id="send" style="margin-top:20px">Надіслати анкету</button>
-        <p class="after">Студія напише вам у Viber. Оплата — 799 грн на картку.</p>
+        <p class="after">Надіслати анкету — безкоштовно. Студія напише вам у Viber, оплата 799 грн — на картку.</p>
       </form>
 
       <div class="done" id="done">
@@ -205,10 +249,9 @@
     </div>
   </section>
 
-  <section>
+  <section class="reveal">
     <h2>Питання</h2>
     <details><summary>Які фото підійдуть?</summary><p>Звичайні фото з телефона, де добре видно обличчя. Можна й старі.</p></details>
-    <details><summary>Можна щось змінити після готовності?</summary><p>Так, безкоштовно: напишіть нам у Viber, що змінити, — і студія виправить.</p></details>
     <details><summary>Куди прийде готова пісня-мультик?</summary><p>У Viber, на номер з анкети: мультфільм, версія для сторіс і пісня окремо.</p></details>
     <details><summary>Я зручніше в Telegram</summary><p>Звісно — <a class="tg" href="https://t.me/Kinopronas_bot">замовте в нашому боті</a>, там та сама анкета.</p></details>
   </section>
@@ -229,10 +272,32 @@ var v = $('v');
 
 function show(k, user) {
   v.src = 'v/' + k + '.mp4'; v.poster = 'v/' + k + '.jpg';
+  if (!user) { v.muted = true; var pr = v.play(); if (pr) pr.catch(function () { }); }   // деякі телефони не стартують відео, підставлене скриптом, без play()
   [].forEach.call(document.querySelectorAll('#ex button'), function (b) { b.classList.toggle('on', b.dataset.p === k); });
   if (user) { v.muted = false; v.controls = true; $('snd').style.display = 'none'; v.play(); scrollTo({ top: v.getBoundingClientRect().top + scrollY - 80, behavior: 'smooth' }); }
 }
-$('h').textContent = TITLES[p]; $(OCC[p]).checked = true; show(p);
+var CTA = { bday:'Хочу пісню на день народження', love:'Хочу пісню-мультик про нас', wed:'Хочу пісню на весілля', mil:'Хочу пісню для захисника' };
+$('h').textContent = TITLES[p]; $('cta').textContent = CTA[p]; $(OCC[p]).checked = true; show(p);
+
+// шторка «фото → герой»: тягнути пальцем або мишкою; на старті сама показує, як працює
+(function () {
+  var ba = $('ba'), drag = false, hinted = false;
+  function set(x) { var r = ba.getBoundingClientRect(); ba.style.setProperty('--x', Math.max(0, Math.min(100, (x - r.left) / r.width * 100)) + '%'); }
+  ba.addEventListener('pointerdown', function (e) { drag = true; hinted = true; ba.setPointerCapture(e.pointerId); set(e.clientX); });
+  ba.addEventListener('pointermove', function (e) { if (drag) set(e.clientX); });
+  ba.addEventListener('pointerup', function () { drag = false; });
+  ba.addEventListener('pointercancel', function () { drag = false; });
+  new IntersectionObserver(function (en, o) {
+    if (!en[0].isIntersecting || hinted) return; o.disconnect();
+    var t0 = performance.now();
+    (function step(t) { if (hinted) return; var k = (t - t0) / 2400; if (k > 1) { ba.style.setProperty('--x', '50%'); return; }
+      ba.style.setProperty('--x', (50 + 38 * Math.sin(k * Math.PI * 2)) + '%'); requestAnimationFrame(step); })(t0);
+  }, { threshold: .6 }).observe(ba);
+})();
+
+// плавна поява блоків під час прокручування
+var rv = new IntersectionObserver(function (en) { en.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); rv.unobserve(e.target); } }); }, { threshold: .12 });
+[].forEach.call(document.querySelectorAll('.reveal'), function (el) { rv.observe(el); });
 $('snd').onclick = function () { v.muted = false; v.currentTime = 0; v.play(); v.controls = true; this.style.display = 'none'; };
 [].forEach.call(document.querySelectorAll('#ex button'), function (b) { b.onclick = function () { show(b.dataset.p, true); }; });
 
