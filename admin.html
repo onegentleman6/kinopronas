@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="uk"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Кабінет студії</title>
+<!-- Кабінет адміністратора (12.10, лише перегляд). Дані: cab.json у гілці «data», зашифровані паролем (tools/bot/cabinet.js). -->
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#140e08">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@1,700&family=Manrope:wght@500;600;700;800&display=swap&subset=cyrillic" rel="stylesheet">
+<style>
+  :root { --bg:#140e08; --card:#1f1710; --card2:#291e14; --line:#3a2b1c; --ink:#f6ead2; --soft:#b9a684; --gold:#ffd86b; --gold2:#f2b33d; --ok:#5fd18b; --warn:#ffb347; --bad:#ff6b5b; --tg:#2aabee; }
+  * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  body { margin:0; background:radial-gradient(120% 50% at 50% 0%, #2c1f12 0%, var(--bg) 55%) fixed; color:var(--ink); font:600 16px/1.45 Manrope, "Segoe UI", system-ui, sans-serif; min-height:100vh; }
+  .wrap { max-width:640px; margin:0 auto; padding:14px 16px 60px; }
+  .top { display:flex; align-items:center; gap:10px; }
+  .top img { width:36px; height:36px; border-radius:50%; border:2px solid rgba(255,216,107,.45); }
+  .top b { font:700 italic 20px Lora, Georgia, serif; color:var(--gold); }
+  .top .sp { flex:1; }
+  .ibtn { border:1px solid var(--line); background:var(--card); color:var(--ink); border-radius:12px; padding:8px 12px; font:700 14px Manrope, sans-serif; cursor:pointer; }
+  .upd { color:var(--soft); font-size:13px; margin:8px 0 2px; }
+  h2 { font:700 italic 21px Lora, Georgia, serif; color:var(--gold); margin:24px 0 10px; display:flex; align-items:center; gap:10px; }
+  h2 small { font:700 12px Manrope, sans-serif; color:var(--soft); background:var(--card2); border-radius:20px; padding:3px 9px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:18px; padding:14px 16px; }
+  .alerts { display:grid; gap:8px; margin-top:12px; }
+  .al { border-radius:14px; padding:11px 14px; font-weight:700; font-size:15px; }
+  .al.bad { background:rgba(255,107,91,.12); border:1px solid rgba(255,107,91,.4); color:#ffc2ba; }
+  .al.warn { background:rgba(255,179,71,.1); border:1px solid rgba(255,179,71,.35); color:#ffd9a3; }
+  .att { display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; margin-top:12px; }
+  .att div { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:12px 10px; text-align:center; }
+  .att b { display:block; font-size:28px; font-weight:800; line-height:1.1; }
+  .att span { font-size:12px; color:var(--soft); }
+  .att .hot { border-color:var(--gold2); background:linear-gradient(180deg, rgba(255,216,107,.14), rgba(255,216,107,.03)); }
+  .att .hot b { color:var(--gold); }
+  .seg { display:flex; background:var(--card); border:1px solid var(--line); border-radius:14px; padding:4px; gap:4px; margin-bottom:10px; }
+  .seg button { flex:1; border:0; background:none; color:var(--soft); font:700 14px Manrope, sans-serif; padding:9px 4px; border-radius:10px; cursor:pointer; }
+  .seg button.on { background:linear-gradient(180deg, var(--gold), var(--gold2)); color:#2a1a05; }
+  .tiles { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .tile { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:14px; }
+  .tile span { display:block; color:var(--soft); font-size:13px; }
+  .tile b { font-size:24px; font-weight:800; letter-spacing:-.3px; }
+  .tile.main { grid-column:1 / -1; background:linear-gradient(135deg, #3a2913, #241a10); border-color:rgba(255,216,107,.35); }
+  .tile.main b { font-size:34px; color:var(--gold); }
+  .list { display:grid; gap:8px; }
+  .item { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:12px 14px; }
+  .item .r1 { display:flex; justify-content:space-between; gap:10px; align-items:baseline; }
+  .item .nm { font-weight:800; font-size:16px; }
+  .item .pr { font-weight:800; color:var(--gold); white-space:nowrap; }
+  .item .r2 { color:var(--soft); font-size:14px; margin-top:2px; }
+  .item .st { display:inline-block; margin-top:6px; font-size:13px; font-weight:700; background:var(--card2); border-radius:20px; padding:3px 10px; }
+  .item .log { margin-top:6px; font-size:12.5px; color:#9d8c6d; font-family:Consolas, monospace; word-break:break-word; }
+  .item a { color:var(--tg); text-decoration:none; font-weight:700; }
+  .empty { color:var(--soft); text-align:center; padding:16px; background:var(--card); border:1px dashed var(--line); border-radius:16px; }
+  .fun { display:grid; gap:8px; }
+  .fun .row { display:grid; grid-template-columns:120px 1fr 44px; gap:10px; align-items:center; font-size:14px; }
+  .fun .bar { height:14px; border-radius:8px; background:var(--card2); overflow:hidden; }
+  .fun .bar i { display:block; height:100%; border-radius:8px; background:linear-gradient(90deg, var(--gold2), var(--gold)); }
+  .fun .n { text-align:right; font-weight:800; }
+  table { width:100%; border-collapse:collapse; font-size:14px; }
+  td, th { padding:8px 6px; border-bottom:1px solid var(--line); text-align:left; }
+  th { color:var(--soft); font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.6px; }
+  td.num, th.num { text-align:right; }
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .ok { color:var(--ok); } .bad { color:var(--bad); } .warnc { color:var(--warn); }
+  /* вхід */
+  .login { max-width:420px; margin:12vh auto 0; padding:0 16px; text-align:center; }
+  .login img { width:72px; height:72px; border-radius:50%; border:2px solid rgba(255,216,107,.5); }
+  .login h1 { font:700 italic 30px Lora, Georgia, serif; color:var(--gold); margin:14px 0 4px; }
+  .login p { color:var(--soft); margin:0 0 20px; }
+  .login input[type=password], .login input[type=text] { width:100%; text-align:center; letter-spacing:2px; font:800 22px Manrope, sans-serif; color:var(--ink); background:var(--card); border:2px solid var(--line); border-radius:16px; padding:15px; outline:none; text-transform:uppercase; }
+  .login input:focus { border-color:var(--gold2); }
+  .rem { display:flex; align-items:center; justify-content:center; gap:8px; color:var(--soft); font-size:14px; margin:12px 0; }
+  .go { width:100%; border:0; cursor:pointer; background:linear-gradient(180deg, var(--gold), var(--gold2)); color:#2a1a05; font:800 19px Manrope, sans-serif; padding:16px; border-radius:60px; }
+  .go[disabled] { opacity:.6; }
+  .lerr { color:var(--bad); font-weight:700; min-height:24px; margin-top:12px; }
+  [hidden] { display:none !important; }
+</style></head><body>
+
+<div class="login" id="login">
+  <img src="icon-512.png" alt="">
+  <h1>Кабінет студії</h1>
+  <p>Введіть пароль кабінету</p>
+  <form id="lf"><input type="password" id="pw" autocomplete="current-password" placeholder="XXXX-XXXX-XXXX" autocapitalize="characters">
+  <label class="rem"><input type="checkbox" id="rem" checked> Запам'ятати на цьому пристрої</label>
+  <button class="go" id="go" type="submit">Увійти</button></form>
+  <div class="lerr" id="lerr"></div>
+</div>
+
+<div class="wrap" id="app" hidden>
+  <div class="top"><img src="icon-512.png" alt=""><b>Кіно про нас</b><span class="sp"></span><button class="ibtn" id="ref">↻</button><button class="ibtn" id="out">Вийти</button></div>
+  <div class="upd" id="upd"></div>
+  <div class="alerts" id="alerts"></div>
+  <div class="att" id="att"></div>
+
+  <h2>Гроші</h2>
+  <div class="seg" id="segM"><button data-k="today">Сьогодні</button><button data-k="week" class="on">Тиждень</button><button data-k="month">Місяць</button><button data-k="all">Усе</button></div>
+  <div class="tiles" id="money"></div>
+
+  <h2>Замовлення в роботі <small id="actN"></small></h2>
+  <div class="list" id="active"></div>
+
+  <h2>Заявки з сайту й форми <small id="formN"></small></h2>
+  <div class="list" id="forms"></div>
+
+  <h2>Воронка бота</h2>
+  <div class="seg" id="segF"><button data-k="week" class="on">7 днів</button><button data-k="month">30 днів</button></div>
+  <div class="card fun" id="funnel"></div>
+
+  <h2>Звідки клієнти <small>30 днів</small></h2>
+  <div class="card"><table id="src"></table></div>
+
+  <h2>Доставлені <small id="rate"></small></h2>
+  <div class="list" id="done"></div>
+
+  <h2>Студія</h2>
+  <div class="grid2" id="studio"></div>
+</div>
+
+<script>
+var DATA_URLS = ['https://api.github.com/repos/onegentleman6/kinopronas/contents/cab.json?ref=data', 'https://raw.githubusercontent.com/onegentleman6/kinopronas/data/cab.json'];
+var $ = function (id) { return document.getElementById(id); };
+var S = null, mK = 'week', fK = 'week', pw = '';
+var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+var grn = function (n) { return Math.round(n || 0).toLocaleString('uk-UA') + ' грн'; };
+var b64 = function (s) { return Uint8Array.from(atob(s), function (c) { return c.charCodeAt(0); }); };
+var norm = function (s) { return String(s || '').toUpperCase().replace(/[^A-Z0-9]/g, ''); };
+function ago(t) { if (!t) return ''; var m = Math.round((Date.now() - t) / 60000); if (m < 1) return 'щойно'; if (m < 60) return m + ' хв тому'; var h = Math.round(m / 60); if (h < 24) return h + ' год тому'; var d = Math.round(h / 24); return d + ' дн тому'; }
+function when(t) { if (!t) return ''; var d = new Date(t); return d.toLocaleDateString('uk-UA', { day: '2-digit', month: '2-digit' }) + ' ' + d.toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' }); }
+
+async function load(password) {
+  var box = null, lastErr = '';
+  for (var i = 0; i < DATA_URLS.length && !box; i++) {
+    try {
+      var r = await fetch(DATA_URLS[i] + (i ? '?t=' + Date.now() : ''), { headers: i ? {} : { Accept: 'application/vnd.github.raw+json' }, cache: 'no-store' });
+      if (r.ok) box = await r.json(); else lastErr = 'HTTP ' + r.status;
+    } catch (e) { lastErr = e.message; }
+  }
+  if (!box) throw new Error('net:' + lastErr);
+  var base = await crypto.subtle.importKey('raw', new TextEncoder().encode(norm(password)), 'PBKDF2', false, ['deriveKey']);
+  var key = await crypto.subtle.deriveKey({ name: 'PBKDF2', salt: b64(box.s), iterations: box.it, hash: 'SHA-256' }, base, { name: 'AES-GCM', length: 256 }, false, ['decrypt']);
+  var plain;
+  try { plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64(box.i) }, key, b64(box.d)); } catch (e) { throw new Error('pw'); }
+  return JSON.parse(new TextDecoder().decode(plain));
+}
+
+function render() {
+  var s = S, st = s.studio || {}, age = (Date.now() - s.at) / 60000;
+  $('upd').textContent = 'Оновлено ' + ago(s.at) + ' · ' + when(s.at);
+  var al = [];
+  if (age > 40) al.push(['bad', '📴 Бот не на зв\'язку ' + ago(s.at).replace(' тому', '') + ' — ПК вимкнений, ігровий режим або збій']);
+  if (!st.n8n) al.push(['bad', '❌ Студія (n8n) не працювала на момент оновлення']);
+  if (st.paused) al.push(['warn', '⏸ Прийом замовлень на паузі']);
+  if (st.kieUsd != null && st.kieUsd < 3) al.push(['warn', '⚠️ kie.ai: $' + st.kieUsd + ' — поповніть (мультик ≈ $2.3)']);
+  if (st.orUsd != null && st.orUsd < 1) al.push(['warn', '⚠️ OpenRouter: $' + st.orUsd]);
+  if (st.diskGb != null && st.diskGb < 8) al.push(['warn', '💾 На диску D: ' + st.diskGb + ' ГБ']);
+  $('alerts').innerHTML = al.map(function (a) { return '<div class="al ' + a[0] + '">' + esc(a[1]) + '</div>'; }).join('');
+
+  var cnt = function (k) { return s.active.filter(function (o) { return o.stage === k; }).length; };
+  var pay = cnt('paid_wait'), rev = cnt('review') + cnt('hold'), nf = s.forms.filter(function (f) { return f.stage === 'new'; }).length;
+  $('att').innerHTML = [[pay, 'перевірити оплату'], [rev, 'переглянути мультик'], [nf, 'нові заявки (Viber)']].map(function (x) { return '<div class="' + (x[0] ? 'hot' : '') + '"><b>' + x[0] + '</b><span>' + x[1] + '</span></div>'; }).join('');
+
+  var m = s.money[mK];
+  $('money').innerHTML = '<div class="tile main"><span>Виручка</span><b>' + grn(m.inc) + '</b></div>' +
+    '<div class="tile"><span>Оплат</span><b>' + m.paid + '</b></div>' +
+    '<div class="tile"><span>Середній чек</span><b>' + (m.paid ? grn(m.inc / m.paid) : '—') + '</b></div>' +
+    '<div class="tile"><span>Собівартість</span><b>' + grn(m.cost) + '</b></div>' +
+    '<div class="tile"><span>Прибуток</span><b class="' + (m.profit >= 0 ? 'ok' : 'bad') + '">' + grn(m.profit) + '</b></div>' +
+    (m.inv ? '<div class="tile" style="grid-column:1/-1"><span>Ваші вкладення (реклама, поповнення)</span><b>' + grn(m.inv) + '</b></div>' : '');
+
+  var act = s.active.filter(function (o) { return o.stage !== 'pay'; }), waitPay = s.active.filter(function (o) { return o.stage === 'pay'; }).length;
+  $('actN').textContent = act.length + (waitPay ? ' · ще ' + waitPay + ' чекають оплати' : '');
+  $('active').innerHTML = act.length ? act.map(function (o) {
+    return '<div class="item"><div class="r1"><span class="nm">' + (o.express ? '⚡ ' : '') + esc(o.name) + '</span><span class="pr">' + grn(o.price) + '</span></div>' +
+      '<div class="r2">' + esc(o.occasion) + (o.source ? ' · ' + esc(o.source) : '') + ' · ' + when(o.at) + '</div>' +
+      '<span class="st">' + esc(o.stageUa) + (o.working ? ' · конвеєр працює' : '') + '</span>' + (o.status ? '<div class="log">' + esc(o.status) + '</div>' : '') + '</div>';
+  }).join('') : '<div class="empty">Нічого в роботі 👌</div>';
+
+  $('formN').textContent = s.forms.length;
+  $('forms').innerHTML = s.forms.length ? s.forms.map(function (f) {
+    var d = String(f.phone || '').replace(/\D/g, ''); if (d.length === 10 && d[0] === '0') d = '38' + d;
+    return '<div class="item"><div class="r1"><span class="nm">№' + f.n + ' · ' + esc(f.name) + '</span><a href="https://viber.click/' + d + '">Viber →</a></div>' +
+      '<div class="r2">' + esc(f.occasion) + ' · фото: ' + f.photos + ' · ' + (f.src === 'gform' ? 'Google-форма' : 'сайт · ' + esc(f.src)) + ' · ' + when(f.at) + '</div><span class="st">' + esc(f.stageUa) + '</span></div>';
+  }).join('') : '<div class="empty">Заявок ще не було</div>';
+
+  var f = s.funnel[fK] || {}, steps = [['Почали анкету', f.started], ['Заповнили', f.filled], ['Дійшли до оплати', f.reached_payment], ['Оплатили', f.paid]], mx = Math.max(1, f.started || 0);
+  $('funnel').innerHTML = steps.map(function (x) { return '<div class="row"><span>' + x[0] + '</span><div class="bar"><i style="width:' + Math.round((x[1] || 0) / mx * 100) + '%"></i></div><span class="n">' + (x[1] || 0) + '</span></div>'; }).join('') +
+    (f.started ? '<div style="color:var(--soft);font-size:13px">Конверсія: ' + Math.round((f.paid || 0) / f.started * 100) + '%</div>' : '');
+
+  $('src').innerHTML = '<tr><th>Джерело</th><th class="num">Людей</th><th class="num">Оплат</th></tr>' + (s.sources.length ? s.sources.map(function (x) { return '<tr><td>' + esc(x.s) + '</td><td class="num">' + x.people + '</td><td class="num ' + (x.paid ? 'ok' : '') + '">' + x.paid + '</td></tr>'; }).join('') : '<tr><td colspan="3" style="color:var(--soft)">Поки порожньо</td></tr>');
+
+  $('rate').textContent = s.rating ? '⭐ ' + s.rating + ' (' + s.ratedN + ')' : '';
+  $('done').innerHTML = s.done.length ? s.done.map(function (o) { return '<div class="item"><div class="r1"><span class="nm">' + esc(o.name) + '</span><span>' + (o.rating ? '⭐'.repeat(o.rating) : '') + '</span></div><div class="r2">' + esc(o.occasion) + ' · ' + when(o.at) + '</div></div>'; }).join('') : '<div class="empty">Ще немає</div>';
+
+  var cell = function (n, v, cls) { return '<div class="tile"><span>' + n + '</span><b class="' + (cls || '') + '" style="font-size:20px">' + v + '</b></div>'; };
+  $('studio').innerHTML = cell('Студія (n8n)', st.n8n ? 'працює' : 'не працює', st.n8n ? 'ok' : 'bad') + cell('Прийом замовлень', st.paused ? 'пауза' : 'відкритий', st.paused ? 'warnc' : 'ok') +
+    cell('kie.ai', st.kieUsd != null ? '$' + st.kieUsd : '—', st.kieUsd != null && st.kieUsd < 3 ? 'warnc' : '') + cell('OpenRouter', st.orUsd != null ? '$' + st.orUsd : '—', st.orUsd != null && st.orUsd < 1 ? 'warnc' : '') +
+    cell('Диск D:', st.diskGb != null ? st.diskGb + ' ГБ' : '—', st.diskGb != null && st.diskGb < 8 ? 'warnc' : '') + cell('Клієнтів', s.clients.total + ' · +' + s.clients.week + ' за 7 дн');
+}
+
+function seg(id, cb) { [].forEach.call($(id).querySelectorAll('button'), function (b) { b.onclick = function () { [].forEach.call($(id).querySelectorAll('button'), function (x) { x.classList.toggle('on', x === b); }); cb(b.dataset.k); render(); }; }); }
+seg('segM', function (k) { mK = k; }); seg('segF', function (k) { fK = k; });
+
+async function enter(password, silent) {
+  $('go').disabled = true; $('lerr').textContent = silent ? '' : 'Відкриваю…';
+  try {
+    S = await load(password); pw = password;
+    try { if ($('rem').checked) localStorage.setItem('cabpw', password); } catch (e) { }
+    $('login').hidden = true; $('app').hidden = false; render();
+  } catch (e) {
+    $('lerr').textContent = e.message === 'pw' ? 'Невірний пароль' : 'Немає зв\'язку з сайтом — спробуйте ще раз';
+    if (e.message === 'pw') { try { localStorage.removeItem('cabpw'); } catch (x) { } }
+  }
+  $('go').disabled = false;
+}
+$('lf').onsubmit = function (e) { e.preventDefault(); enter($('pw').value); };
+$('ref').onclick = async function () { this.textContent = '…'; try { S = await load(pw); render(); } catch (e) { } this.textContent = '↻'; };
+$('out').onclick = function () { try { localStorage.removeItem('cabpw'); } catch (e) { } location.reload(); };
+setInterval(function () { if (pw) load(pw).then(function (x) { S = x; render(); }).catch(function () { }); }, 5 * 60000);
+setInterval(function () { if (S) $('upd').textContent = 'Оновлено ' + ago(S.at) + ' · ' + when(S.at); }, 30000);
+try { var saved = localStorage.getItem('cabpw'); if (saved) enter(saved, true); } catch (e) { }
+</script>
+</body></html>
