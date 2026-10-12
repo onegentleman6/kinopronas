@@ -266,7 +266,11 @@
 <div class="sticky" id="sticky"><a class="pill" href="#order">Замовити · 799 грн</a></div>
 
 <script>
-var GS = 'https://script.google.com/macros/s/AKfycbzuRbkiBv8IHOCP_LvfmsA-7m_GqgIjrzjSgMjVIJmg59E1Y-oHqO0wJgmMETQUwlm7Jw/exec';
+// Meta Pixel (13.10): порожній — не вантажиться. Номер — Events Manager → «Джерела даних» → піксель. Події: PageView, Contact (Telegram), Lead (анкета).
+var PIXEL = '';
+var fbq = function () { };
+if (PIXEL) { (function (f, b, e, v, n, t, s) { if (f.fbq && f.fbq.loaded) return; n = f.fbq = function () { n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments); }; if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0'; n.queue = []; t = b.createElement(e); t.async = !0; t.src = v; s = b.getElementsByTagName(e)[0]; s.parentNode.insertBefore(t, s); })(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js'); fbq = window.fbq; fbq('init', PIXEL); fbq('track', 'PageView'); }
+var GS ='https://script.google.com/macros/s/AKfycbzuRbkiBv8IHOCP_LvfmsA-7m_GqgIjrzjSgMjVIJmg59E1Y-oHqO0wJgmMETQUwlm7Jw/exec';
 // привід: ?p=bday|love|wed|mil — сторінка під рекламу конкретного приводу; без p (головна) — нарізка з усіх приводів і вибір приводу
 var TITLES = { all:'Пісня-мультик у подарунок', bday:'Пісня-мультик на день народження', love:'Подарунок коханій людині — пісня-мультик про вас', wed:'Пісня-мультик у подарунок на весілля', mil:'Пісня-мультик для захисника чи захисниці' };
 var CTA = { all:'Замовити пісню-мультик', bday:'Хочу пісню на день народження', love:'Хочу пісню-мультик про нас', wed:'Хочу пісню на весілля', mil:'Хочу пісню для захисника' };
@@ -314,7 +318,7 @@ var web = 'https://t.me/Kinopronas_bot?start=' + src;
 [].forEach.call(document.querySelectorAll('a.tg'), function (a) {
   a.href = web;
   a.onclick = function (e) {
-    e.preventDefault();
+    e.preventDefault(); fbq('track', 'Contact');
     var t = setTimeout(function () { if (!document.hidden) location.href = web; }, 1500);
     document.addEventListener('visibilitychange', function () { if (document.hidden) clearTimeout(t); }, { once: true });
     location.href = 'tg://resolve?domain=Kinopronas_bot&start=' + src;
@@ -370,6 +374,7 @@ $('f').onsubmit = function (ev) {
     .then(function (r) { return r.json(); })
     .then(function (j) {
       if (!j.ok) throw new Error(j.error || 'помилка');
+      fbq('track', 'Lead', { content_name: occ.value, value: 799, currency: 'UAH' });
       $('f').style.display = 'none'; $('done').style.display = 'block';
       $('order').scrollIntoView({ behavior: 'smooth' });
     })
