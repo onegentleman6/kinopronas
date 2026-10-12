@@ -376,4 +376,6 @@ $('copy').onclick = function () {
   });
 };
 </script>
+<!-- кнопка кабінету — лише на пристроях, де власник уже входив у кабінет (admin.html зберігає cabpw); клієнти її не бачать -->
+<script>try { if (localStorage.getItem('cabpw') || /[?&]admin\b/.test(location.search)) { var ab = document.createElement('a'); ab.href = 'admin.html'; ab.textContent = '🎛 Кабінет'; ab.style.cssText = 'position:fixed;top:12px;right:12px;z-index:20;background:rgba(20,14,8,.85);color:#ffd86b;border:1px solid rgba(255,216,107,.45);border-radius:14px;padding:8px 12px;font:700 14px Manrope,Segoe UI,sans-serif;text-decoration:none;backdrop-filter:blur(6px)'; document.body.appendChild(ab); } } catch (e) { }</script>
 </body></html>
