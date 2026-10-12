@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="uk"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Пісня-мультик у подарунок — Кіно про нас</title>
-<!-- ГОЛОВНА сайту (13.10) = копія go.html (сторінки для реклами) + блок KinoProNas Publisher і посилання на політику (потрібні для перевірок Google/TikTok). Змінювати go.html, потім перезбирати цю (temp: див. CLAUDE.md). Анкета — тут же (без Telegram і без входу в Google) → скрипт Google (doPost) → бот (gform.js). -->
+<!-- ГОЛОВНА: зібрано з go.html скриптом tools/build-index.ps1 — не редагувати вручну. Сторінка для реклами (12.10): go.html?p=bday|love|wed|mil&s=<мітка>. Анкета — тут же (без Telegram і без входу в Google) → скрипт Google (doPost) → бот (gform.js). -->
 <meta name="description" content="Героїв малюємо з ваших фото — це ваші справжні рідні, а пісню пишемо саме про них. 799 грн, готово за добу.">
 <meta name="robots" content="index, follow">
 <meta name="theme-color" content="#1b130c">
@@ -132,12 +132,17 @@
   .part::after { content:''; flex:1; height:1px; background:var(--line); }
   .priv { font-size:14px; color:var(--ok); font-weight:700; margin:8px 2px 0; }
   @media (prefers-reduced-motion: reduce) { .pill::after, .glow::before { animation:none; } .reveal { opacity:1; transform:none; } }
+  .occHero { display:flex; gap:8px; overflow-x:auto; margin:0 -16px 16px; padding:2px 16px 6px; scrollbar-width:none; -webkit-overflow-scrolling:touch; }
+  .occHero::-webkit-scrollbar { display:none; }
+  .occHero button { flex:0 0 auto; border:1px solid rgba(255,216,107,.3); background:rgba(255,255,255,.06); color:#f3e3c3; font:700 15px Onest, sans-serif; padding:10px 15px; border-radius:30px; cursor:pointer; white-space:nowrap; }
+  .occHero button.on { background:linear-gradient(180deg, var(--gold), var(--gold2)); color:#2a1a05; border-color:transparent; }
 </style></head><body>
 
 <header class="hero"><div class="wrap">
   <div class="brand"><img src="icon-512.png" alt=""><span>Кіно про нас</span></div>
   <div class="plate"><h1 id="h">Пісня-мультик у подарунок</h1></div>
   <p class="sub">Героїв малюємо <b>з ваших фото</b> — це ваші справжні рідні, а пісню пишемо <b>саме про них</b>, за вашою розповіддю.</p>
+  <div class="occHero" id="occHero"><button type="button" data-p="all">🎬 Усі приводи</button><button type="button" data-p="bday">🎂 День народження</button><button type="button" data-p="love">❤️ Коханій людині</button><button type="button" data-p="wed">💒 Весілля</button><button type="button" data-p="mil">💙💛 Захиснику</button></div>
   <div class="glow"><div class="video">
     <video id="v" autoplay muted loop playsinline preload="metadata"></video>
     <button class="snd" id="snd" type="button">🔊 Увімкнути звук</button>
@@ -268,23 +273,25 @@
 
 <script>
 var GS = 'https://script.google.com/macros/s/AKfycbzuRbkiBv8IHOCP_LvfmsA-7m_GqgIjrzjSgMjVIJmg59E1Y-oHqO0wJgmMETQUwlm7Jw/exec';
-var TITLES = { bday:'Пісня-мультик на день народження', love:'Подарунок коханій людині — пісня-мультик про вас', wed:'Пісня-мультик у подарунок на весілля', mil:'Пісня-мультик для захисника чи захисниці' };
+// привід: ?p=bday|love|wed|mil — сторінка під рекламу конкретного приводу; без p (головна) — нарізка з усіх приводів і вибір приводу
+var TITLES = { all:'Пісня-мультик у подарунок', bday:'Пісня-мультик на день народження', love:'Подарунок коханій людині — пісня-мультик про вас', wed:'Пісня-мультик у подарунок на весілля', mil:'Пісня-мультик для захисника чи захисниці' };
+var CTA = { all:'Замовити пісню-мультик', bday:'Хочу пісню на день народження', love:'Хочу пісню-мультик про нас', wed:'Хочу пісню на весілля', mil:'Хочу пісню для захисника' };
 var OCC = { bday:'o1', love:'o2', wed:'o3', mil:'o4' };
 var q = new URLSearchParams(location.search);
-var p = TITLES[q.get('p')] ? q.get('p') : 'bday';
+var p = TITLES[q.get('p')] ? q.get('p') : 'all';
 var src = (q.get('s') || 'site').replace(/[^A-Za-z0-9_-]/g, '').slice(0, 60) || 'lp';
 var $ = function (id) { return document.getElementById(id); };
 var v = $('v');
 
 function show(k, user) {
   v.src = 'v/' + k + '.mp4'; v.poster = 'v/' + k + '.jpg';
-  if (!user) { v.muted = true; var pr = v.play(); if (pr) pr.catch(function () { }); }   // деякі телефони не стартують відео, підставлене скриптом, без play()
-  [].forEach.call(document.querySelectorAll('#ex button'), function (b) { b.classList.toggle('on', b.dataset.p === k); });
-  if (user) { v.muted = false; v.controls = true; $('snd').style.display = 'none'; v.play(); scrollTo({ top: v.getBoundingClientRect().top + scrollY - 80, behavior: 'smooth' }); }
+  [].forEach.call(document.querySelectorAll('#ex button, #occHero button'), function (b) { b.classList.toggle('on', b.dataset.p === k); });
+  $('h').textContent = TITLES[k]; $('cta').textContent = CTA[k];
+  if (OCC[k]) $(OCC[k]).checked = true;
+  if (user) { v.muted = false; v.controls = true; $('snd').style.display = 'none'; var pu = v.play(); if (pu) pu.catch(function () { }); }
+  else { v.muted = true; var pr = v.play(); if (pr) pr.catch(function () { }); }   // деякі телефони не стартують відео, підставлене скриптом, без play()
 }
-var CTA = { bday:'Хочу пісню на день народження', love:'Хочу пісню-мультик про нас', wed:'Хочу пісню на весілля', mil:'Хочу пісню для захисника' };
-if (q.get('p')) { $('h').textContent = TITLES[p]; $('cta').textContent = CTA[p]; } $(OCC[p]).checked = true; show(p);
-
+show(p);
 // шторка «фото → герой»: тягнути пальцем або мишкою; на старті сама показує, як працює
 (function () {
   var ba = $('ba'), drag = false, hinted = false;
@@ -305,7 +312,8 @@ if (q.get('p')) { $('h').textContent = TITLES[p]; $('cta').textContent = CTA[p];
 var rv = new IntersectionObserver(function (en) { en.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); rv.unobserve(e.target); } }); }, { threshold: .12 });
 [].forEach.call(document.querySelectorAll('.reveal'), function (el) { rv.observe(el); });
 $('snd').onclick = function () { v.muted = false; v.currentTime = 0; v.play(); v.controls = true; this.style.display = 'none'; };
-[].forEach.call(document.querySelectorAll('#ex button'), function (b) { b.onclick = function () { show(b.dataset.p, true); }; });
+[].forEach.call(document.querySelectorAll('#ex button'), function (b) { b.onclick = function () { show(b.dataset.p, true); scrollTo({ top: v.getBoundingClientRect().top + scrollY - 80, behavior: 'smooth' }); }; });
+[].forEach.call(document.querySelectorAll('#occHero button'), function (b) { b.onclick = function () { show(b.dataset.p, b.dataset.p !== 'all' || !v.muted); }; });
 
 // Telegram — спершу застосунок напряму, не відкрився — звичайне посилання
 var web = 'https://t.me/Kinopronas_bot?start=' + src;
@@ -351,12 +359,13 @@ $('f').onsubmit = function (ev) {
   ev.preventDefault(); $('err').style.display = 'none';
   var occ = document.querySelector('input[name=occ]:checked');
   var val = function (id) { return $(id).value.trim(); };
+  if (!occ) return fail('Оберіть, з якої нагоди подарунок 🙂', $('o1'));
   if (!val('hero')) return fail('Напишіть, кому даруємо пісню 🙂', $('hero'));
   if (val('facts').length < 15) return fail('Розкажіть про людину хоча б кілька слів — так пісня вийде живою', $('facts'));
   if (!val('name')) return fail('Напишіть ваше ім\'я', $('name'));
   if (val('phone').replace(/\D/g, '').length < 9) return fail('Перевірте номер телефону — на нього ми напишемо у Viber', $('phone'));
   var a = {
-    'З якої нагоди подарунок?': occ ? occ.value : 'День народження',
+    'З якої нагоди подарунок?': occ.value,
     'Кому даруємо пісню?': val('hero'), 'Від кого подарунок?': val('from'), 'Розкажіть про цю людину': val('facts'),
     'Який настрій у пісні?': 'Хай студія підбере', 'Хто співатиме — жінка чи чоловік?': 'Хай студія підбере',
     'Хто є хто на фото?': val('people'), 'Хочете щось додати?': photos.length ? '' : 'Фото надішле у Viber',
