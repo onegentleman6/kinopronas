@@ -142,7 +142,7 @@
   <div class="brand"><img src="icon-512.png" alt=""><span>Кіно про нас</span></div>
   <div class="plate"><h1 id="h">Пісня-мультик у подарунок</h1></div>
   <p class="sub">Героїв малюємо <b>з ваших фото</b> — це ваші справжні рідні, а пісню пишемо <b>саме про них</b>, за вашою розповіддю.</p>
-  <div class="occHero" id="occHero"><button type="button" data-p="all">🎬 Усі приводи</button><button type="button" data-p="bday">🎂 День народження</button><button type="button" data-p="love">❤️ Коханій людині</button><button type="button" data-p="wed">💒 Весілля</button><button type="button" data-p="mil">💙💛 Захиснику</button></div>
+  <div class="occHero" id="occHero"><button type="button" data-p="all">🎬 Усі приводи</button><button type="button" data-p="bday">🎂 День народження</button><button type="button" data-p="love">❤️ Коханій людині</button><button type="button" data-p="mil">💙💛 Захиснику</button></div>
   <div class="glow"><div class="video">
     <video id="v" autoplay muted loop playsinline preload="metadata"></video>
     <button class="snd" id="snd" type="button">🔊 Увімкнути звук</button>
@@ -181,7 +181,6 @@
     <div class="ex" id="ex">
       <button type="button" data-p="bday"><img src="v/bday.jpg" alt="">День народження</button>
       <button type="button" data-p="love"><img src="v/love.jpg" alt="">Кохання</button>
-      <button type="button" data-p="wed"><img src="v/wed.jpg" alt="">Весілля</button>
       <button type="button" data-p="mil"><img src="v/mil.jpg" alt="">Захиснику</button>
     </div>
   </section>
@@ -198,16 +197,28 @@
   <section id="order">
     <div class="formCard">
       <form id="f" novalidate>
-        <h2>Анкета замовлення</h2>
-        <p class="lead2">2–3 хвилини. Пишіть як зручно, своїми словами.</p>
+        <h2 id="fTitle">Анкета замовлення</h2>
+        <p class="lead2" id="fLead">2–3 хвилини. Пишіть як зручно, своїми словами.</p>
+
+        <div id="prodBox">
+        <label class="q">Що замовляєте?</label>
+        <div class="chips" id="prod">
+          <input type="radio" name="prod" id="p1" value="Пісня-мультик" checked><label for="p1">🎬 Пісня-мультик · 799 грн</label>
+          <input type="radio" name="prod" id="p2" value="Пісня"><label for="p2">🎵 Лише пісня · 180 грн</label>
+        </div>
+        </div>
+
+        <div id="aboutBox">
 
         <div class="part">1 · Про людину</div>
         <label class="q">З якої нагоди подарунок?</label>
         <div class="chips" id="occ">
           <input type="radio" name="occ" id="o1" value="День народження"><label for="o1">🎂 День народження</label>
           <input type="radio" name="occ" id="o2" value="Історія кохання"><label for="o2">❤️ Коханій людині</label>
-          <input type="radio" name="occ" id="o3" value="Весілля"><label for="o3">💒 Весілля</label>
+          <input type="radio" name="occ" id="o3" value="Ювілей"><label for="o3">🎊 Ювілей</label>
           <input type="radio" name="occ" id="o4" value="Захиснику / захисниці"><label for="o4">💙💛 Захиснику</label>
+          <input type="radio" name="occ" id="o5" value="Підтримка"><label for="o5">🤗 Підтримка</label>
+          <input type="radio" name="occ" id="o6" value="Просто так"><label for="o6">💐 Просто так</label>
         </div>
 
         <label class="q" for="hero">Кому даруємо пісню?</label>
@@ -216,22 +227,27 @@
         <label class="q" for="facts">Розкажіть про цю людину</label>
         <textarea id="facts" placeholder="Яка вона, що любить, як ви її ласкаво називаєте, ваш спільний теплий спогад…"></textarea>
         <p class="hint">🎤 Не хочеться писати? Натисніть мікрофон на клавіатурі телефона й скажіть уголос.</p>
+        </div>
 
-        <div class="part">2 · Фото</div>
+        <div id="photoBox">
+        <div class="part" id="photoPart">2 · Фото</div>
         <label class="q">Фото <em>(3–8, де добре видно обличчя)</em></label>
         <button type="button" class="photoBtn" id="pick">📷 Додати фото</button>
         <input type="file" id="file" accept="image/*" multiple hidden>
         <div class="thumbs" id="thumbs"></div>
         <p class="priv">🔒 Фото бачить лише студія — тільки для вашого мультика.</p>
-        <p class="hint">Немає фото під рукою? Надішлете потім у Viber.</p>
+        <p class="hint" id="noPhotoHint">Немає фото під рукою? Надішлете потім у Viber.</p>
 
         <label class="q" for="people">Хто є хто на фото? <em>(можна пропустити)</em></label>
         <input type="text" id="people" placeholder="На першому — Олена й тато Петро" autocomplete="off">
+        </div>
 
+        <div id="fromBox">
         <label class="q" for="from">Від кого подарунок? <em>(можна пропустити)</em></label>
         <input type="text" id="from" placeholder="від доньки Марії" autocomplete="off">
+        </div>
 
-        <div class="part">3 · Куди надіслати мультик</div>
+        <div class="part" id="sendPart">3 · Куди надіслати мультик</div>
         <label class="q" for="name">Ваше ім'я</label>
         <input type="text" id="name" autocomplete="given-name">
         <label class="q" for="phone">Ваш телефон (Viber)</label>
@@ -240,13 +256,13 @@
 
         <p class="err" id="err"></p>
         <button class="pill" type="submit" id="send" style="margin-top:20px">Надіслати анкету</button>
-        <p class="after">Надіслати анкету — безкоштовно. Студія напише вам у Viber, оплата 799 грн — на картку.</p>
+        <p class="after" id="after">Надіслати анкету — безкоштовно. Студія напише вам у Viber, оплата 799 грн — на картку.</p>
       </form>
 
       <div class="done" id="done">
         <div class="big">❤️</div>
         <h2>Дякуємо! Анкету отримали</h2>
-        <p>Студія напише вам у Viber найближчим часом. Щоб ми почали одразу, можна вже зараз оплатити <b>799 грн</b> на картку:</p>
+        <p>Студія напише вам у Viber найближчим часом. Щоб ми почали одразу, можна вже зараз оплатити <b id="donePrice">799 грн</b> на картку:</p>
         <div class="card" id="cardNo">5232 4410 1298 3321</div>
         <button class="copy" type="button" id="copy">📋 Скопіювати номер картки</button>
         <p class="hint" style="margin-top:14px">Після оплати надішліть, будь ласка, скриншот у Viber у відповідь на наше повідомлення.</p>
@@ -268,7 +284,7 @@
   </section>
 </main>
 
-<footer>Контакти: <a href="https://t.me/Kinopronas_bot?start=site_contacts">Telegram @Kinopronas_bot</a> · <a href="https://www.instagram.com/kino.pro.nas/">Instagram</a> · <a href="https://www.facebook.com/profile.php?id=1267443576463198">Facebook</a> · <a href="https://t.me/kinopronas_vidguky">Відгуки</a><br><a href="privacy.html">Політика конфіденційності</a> · <a href="privacy.html#terms">Умови використання</a> · <a href="privacy.html#en">Privacy Policy &amp; Terms (EN)</a><br>© 2026 Студія «Кіно про нас»</footer>
+<footer>Контакти: <a href="https://t.me/Kinopronas_bot?start=site_contacts">Telegram @Kinopronas_bot</a> · <a href="https://www.instagram.com/kino.pro.nas/">Instagram</a> · <a href="https://www.facebook.com/profile.php?id=1267443576463198">Facebook</a> · <a href="https://t.me/kinopronas_vidguky">Відгуки</a><br><a href="privacy.html">Політика конфіденційності</a> · <a href="privacy.html#terms">Умови використання</a> · <a href="privacy.html#en">Privacy Policy &amp; Terms (EN)</a><br><span style="font-size:13px"><a href="pisnya-mami.html">Пісня мамі</a> · <a href="pisnya-tatovi.html">Пісня татові</a> · <a href="pisnya-cholovikovi.html">Пісня чоловікові</a> · <a href="pisnya-druzhyni.html">Пісня дружині</a> · <a href="pisnya-na-den-narodzhennya.html">На день народження</a> · <a href="pisnya-na-yuvilei.html">На ювілей</a> · <a href="pisnya-zakhysnyku.html">Захиснику</a> · <a href="multyk-z-foto.html">Мультик з фото</a></span><br>© 2026 Студія «Кіно про нас»</footer>
 <div class="sticky" id="sticky"><a class="pill" href="#order">Замовити · 799 грн</a></div>
 
 <script>
@@ -358,29 +374,57 @@ function drawThumbs() {
   $('pick').textContent = photos.length ? '📷 Додати ще фото (' + photos.length + ' з 8)' : '📷 Додати фото';
 }
 
+// 13.10: продукт — пісня-мультик (799) / лише пісня (180) / мультик до вже готової пісні (?p=klip&k=<номер>, 490)
+var QS = new URLSearchParams(location.search), KLIP = QS.get('p') === 'klip', KNO = (QS.get('k') || '').replace(/\D/g, '');
+function prod() { return KLIP ? 'klip' : (document.querySelector('input[name=prod]:checked') || {}).value === 'Пісня' ? 'song' : 'film'; }
+function price() { return { film: 799, song: 180, klip: 490 }[prod()]; }
+function syncProd() {
+  var p = prod();
+  $('photoBox').style.display = p === 'song' ? 'none' : '';
+  $('aboutBox').style.display = $('fromBox').style.display = p === 'klip' ? 'none' : '';
+  $('prodBox').style.display = $('noPhotoHint').style.display = p === 'klip' ? 'none' : '';
+  $('photoPart').textContent = p === 'klip' ? '1 · Фото рідних для мультика' : '2 · Фото';
+  $('sendPart').textContent = p === 'klip' ? '2 · Куди надіслати мультик' : p === 'song' ? '2 · Куди надіслати пісню' : '3 · Куди надіслати мультик';
+  $('after').textContent = 'Надіслати анкету — безкоштовно. Студія напише вам у Viber, оплата ' + price() + ' грн — на картку.';
+  $('donePrice').textContent = price() + ' грн';
+}
+[].forEach.call(document.querySelectorAll('input[name=prod]'), function (r) { r.onchange = syncProd; });
+if (KLIP) {
+  $('fTitle').textContent = '🎬 Оживимо вашу пісню мультиком';
+  $('fLead').textContent = 'Надішліть фото рідних — намалюємо їх героями мультфільму на всю вашу пісню. 490 грн, готово протягом доби.';
+  setTimeout(function () { $('order').scrollIntoView(); }, 300);
+}
+syncProd();
 function fail(msg, el) { var e = $('err'); e.textContent = msg; e.style.display = 'block'; if (el) el.focus(); }
 $('f').onsubmit = function (ev) {
   ev.preventDefault(); $('err').style.display = 'none';
   var occ = document.querySelector('input[name=occ]:checked');
   var val = function (id) { return $(id).value.trim(); };
+  var p = prod();
+  if (p !== 'klip') {
   if (!occ) return fail('Оберіть, з якої нагоди подарунок 🙂', $('o1'));
   if (!val('hero')) return fail('Напишіть, кому даруємо пісню 🙂', $('hero'));
   if (val('facts').length < 15) return fail('Розкажіть про людину хоча б кілька слів — так пісня вийде живою', $('facts'));
+  } else if (!photos.length) return fail('Додайте хоча б одне фото — з нього намалюємо героя 🙂', $('pick'));
   if (!val('name')) return fail('Напишіть ваше ім\'я', $('name'));
   if (val('phone').replace(/\D/g, '').length < 9) return fail('Перевірте номер телефону — на нього ми напишемо у Viber', $('phone'));
-  var a = {
+  var a = p === 'klip' ? {
+    'Що замовляєте?': 'Мультик до пісні', 'Номер замовлення': KNO, 'Кому даруємо пісню?': 'мультик до пісні №' + (KNO || '?'),
+    'Хто є хто на фото?': val('people'), "Ваше ім'я": val('name'), 'Ваш телефон (Viber)': val('phone')
+  } : {
+    'Що замовляєте?': p === 'song' ? 'Пісня' : 'Пісня-мультик',
     'З якої нагоди подарунок?': occ.value,
     'Кому даруємо пісню?': val('hero'), 'Від кого подарунок?': val('from'), 'Розкажіть про цю людину': val('facts'),
     'Який настрій у пісні?': 'Хай студія підбере', 'Хто співатиме — жінка чи чоловік?': 'Хай студія підбере',
-    'Хто є хто на фото?': val('people'), 'Хочете щось додати?': photos.length ? '' : 'Фото надішле у Viber',
+    'Хто є хто на фото?': val('people'), 'Хочете щось додати?': photos.length || p === 'song' ? '' : 'Фото надішле у Viber',
     "Ваше ім'я": val('name'), 'Ваш телефон (Viber)': val('phone')
   };
   var btn = $('send'); btn.disabled = true; btn.textContent = 'Надсилаємо…';
-  fetch(GS, { method: 'POST', body: JSON.stringify({ a: a, photos: photos.map(function (d) { return d.split(',')[1]; }), src: src, hp: val('hp') }) })
+  fetch(GS, { method: 'POST', body: JSON.stringify({ a: a, photos: (p === 'song' ? [] : photos).map(function (d) { return d.split(',')[1]; }), src: src, hp: val('hp') }) })
     .then(function (r) { return r.json(); })
     .then(function (j) {
       if (!j.ok) throw new Error(j.error || 'помилка');
-      fbq('track', 'Lead', { content_name: occ.value, value: 799, currency: 'UAH' });
+      fbq('track', 'Lead', { content_name: p === 'klip' ? 'Мультик до пісні' : occ.value, value: price(), currency: 'UAH' });
       $('f').style.display = 'none'; $('done').style.display = 'block';
       $('order').scrollIntoView({ behavior: 'smooth' });
     })
