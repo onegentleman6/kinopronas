@@ -62,6 +62,18 @@
   .ex img { width:100%; aspect-ratio:4/5; object-fit:cover; border-radius:14px; display:block; margin-bottom:6px; border:3px solid transparent; }
   .ex button.on img { border-color:var(--gold2); }
   .ex button.on { color:var(--ink); }
+  .cmp { display:grid; gap:12px; }
+  .cmpRow { background:var(--paper); border:1px solid var(--line); border-radius:18px; padding:14px 16px; }
+  .cmpRow.us { border:2px solid var(--gold2); background:#fff8e6; box-shadow:0 8px 22px rgba(242,179,61,.18); }
+  .cmpHead { display:flex; justify-content:space-between; align-items:baseline; gap:10px; font-size:17px; }
+  .cmpHead span { font-family:Unbounded, sans-serif; font-weight:800; font-size:18px; white-space:nowrap; }
+  .them .cmpHead span { color:#8a8a8a; }
+  .us .cmpHead span { color:var(--goldInk); font-size:22px; }
+  .cmpBar { height:10px; border-radius:10px; background:rgba(0,0,0,.06); margin:10px 0 8px; overflow:hidden; }
+  .cmpBar i { display:block; height:100%; border-radius:10px; background:#c9c9c9; }
+  .us .cmpBar i { background:linear-gradient(90deg, var(--gold), var(--gold2)); }
+  .cmpRow p { margin:0; font-size:15px; color:var(--muted, #666); }
+  .cmpNote { margin:10px 2px 0; font-size:13px; color:var(--muted, #888); }
   .guar { display:grid; gap:10px; }
   .guar div { display:flex; gap:12px; align-items:center; background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:13px 16px; font-size:17px; }
   .guar i { font-style:normal; font-size:24px; }
@@ -182,6 +194,15 @@
       <div class="step"><div class="num">2</div><div><b id="st2b">Додайте фото</b><span id="st2s">Ми намалюємо з них героїв, а гострайтер напише пісню.</span></div></div>
       <div class="step"><div class="num">3</div><div><b id="st3b">За добу — готово</b><span id="st3s">Пісню й мультфільм надішлемо вам у Viber.</span></div></div>
     </div>
+  </section>
+
+  <section class="reveal" id="cmpSec">
+    <h2>У 2–3 рази <em>дешевше</em></h2>
+    <div class="cmp">
+      <div class="cmpRow them"><div class="cmpHead"><b>Інші студії</b><span>1 600–2 900 грн</span></div><div class="cmpBar"><i style="width:100%"></i></div><p>пісня з відео · чекати 5–7 днів</p></div>
+      <div class="cmpRow us"><div class="cmpHead"><b>Кіно про нас</b><span>799 грн</span></div><div class="cmpBar"><i style="width:28%"></i></div><p>пісня + мультфільм · <b>за добу</b> · героїв малюємо <b>з ваших фото</b></p></div>
+    </div>
+    <p class="cmpNote">Ціни інших студій — з їхніх сайтів, жовтень 2026.</p>
   </section>
 
   <section class="reveal" id="exSec">
@@ -412,7 +433,8 @@ function setT(t) {
   [].forEach.call(document.querySelectorAll('#prodSw button'), function (b) { b.classList.toggle('on', b.dataset.t === t); });
   ['sub', 'per', 'tr1', 'tr2', 'st2b', 'st2s', 'st3b', 'st3s', 'stk'].forEach(function (k) { $(k).innerHTML = s[k]; });
   $('note').textContent = s.note; $('priceBig').innerHTML = s.price;
-  $('occHero').style.display = $('baSec').style.display = $('exSec').style.display = t === 'song' ? 'none' : '';
+  $('occHero').style.display = $('baSec').style.display = $('exSec').style.display = $('cmpSec').style.display = t === 'song' ? 'none' : '';
+  if (KLIP) $('cmpSec').style.display = 'none';
   $('vbox').classList.toggle('song', t === 'song');
   v.controls = false; v.muted = true; $('snd').style.display = '';
   if (t === 'song') { v.src = 'v/song.mp4'; v.poster = 'v/song.jpg'; $('h').textContent = s.h; $('cta').textContent = s.cta; var pr = v.play(); if (pr) pr.catch(function () { }); }
